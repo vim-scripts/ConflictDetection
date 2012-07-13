@@ -1,0 +1,124 @@
+*ConflictDetection.txt* Detect and highlight SCM conflict markers.
+
+		     CONFLICT DETECTION    by Ingo Karkat
+						       *ConflictDetection.vim*
+description			|ConflictDetection-description|
+usage				|ConflictDetection-usage|
+installation			|ConflictDetection-installation|
+configuration			|ConflictDetection-configuration|
+integration			|ConflictDetection-integration|
+limitations			|ConflictDetection-limitations|
+known problems			|ConflictDetection-known-problems|
+todo				|ConflictDetection-todo|
+history				|ConflictDetection-history|
+
+==============================================================================
+DESCRIPTION				       *ConflictDetection-description*
+
+This plugin detects and highlights conflict markers such as <<<<<<<, =======,
+and >>>>>>>, which are inserted by source code management systems on merges to
+indicate that the automatic resolution failed; this plugin helps you with
+becoming aware of and finding them.
+
+RELATED WORKS								     *
+
+To quickly locate and resolve the conflicts, you can use the motions and text
+objects provided by the companion |ConflictMotions.vim| plugin (vimscript
+#3991).
+
+==============================================================================
+USAGE						     *ConflictDetection-usage*
+
+The plugin automatically adds syntax definitions for the conflict markers and
+the conflicted lines which are enclosed in the markers. Lines originating from
+"our" version are highlighted in a different way than lines from "their"
+version (1), so it's easier for you to visually differentiate the alternatives
+and make the right editing choices to resolve the conflict. The "base" version
+of the diff3-style syntax is supported, too.
+
+(1) unless the filetype's own syntax somehow interferes with it
+
+						  *ConflictDetection-warnings*
+The plugin warns you when a buffer that contains conflict markers is edited or
+saved. Cp. |g:ConflictDetection_WarnEvents|
+
+		   *ConflictDetection-status* *ConflictDetection-b:conflicted*
+The detections stores its status in the buffer variable b:conflicted. You can
+evaluate this boolean variable in a custom |statusline| to indicate whether
+the buffer contains conflicts.
+
+==============================================================================
+INSTALLATION				      *ConflictDetection-installation*
+
+This script is packaged as a |vimball|. If you have the "gunzip" decompressor
+in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
+vimball or via the |:UseVimball| command. >
+    vim ConflictDetection.vba.gz
+    :so %
+To uninstall, use the |:RmVimball| command.
+
+DEPENDENCIES				      *ConflictDetection-dependencies*
+
+- Requires Vim 7.0 or higher.
+
+==============================================================================
+CONFIGURATION				     *ConflictDetection-configuration*
+
+For a permanent configuration, put the following commands into your |vimrc|:
+
+					  *ConflictDetection-highlight-colors*
+By default, the |DiffAdd| (our version), |DiffText| (their version), and
+|DiffChange| (base version) highlight groups are used for highlighting
+conflicted lines. The lines containing the highlight markers are colored with
+a foreground color derived from the correspoding groups.
+You may define your own colors via the |:highlight| command: >
+    highlight def link conflictOurs                     guibg=Green
+    highlight def link conflictBase                     guibg=Brown
+    highlight def link conflictTheirs                   guibg=Red
+    highlight def link conflictSeparatorMarkerSymbol    guifg=Black
+    highlight def conflictOursMarker                    guifg=Green
+    highlight def conflictBaseMarker                    guifg=Brown
+    highlight def conflictTheirsMarker                  guifg=Red
+<
+					*g:ConflictDetection_AutoDetectEvents*
+The buffer is searched for conflict markers when a file is edited and when the
+buffer is saved, and the status is updated accordingly. The |autocmd-events|
+are stored in a variable. If you don't need the auto-detection, empty the
+event list: >
+    let g:ConflictDetection_AutoDetectEvents = ''
+<
+					      *g:ConflictDetection_WarnEvents*
+A warning message is issued when the buffer is read or written and conflict
+markers have been detected. You can empty / edit the |autocmd-events| list if
+you don't want a warning at all / on buffer writes only: >
+    let g:ConflictDetection_WarnEvents = 'BufWritePost'
+<
+==============================================================================
+INTEGRATION				       *ConflictDetection-integration*
+
+==============================================================================
+LIMITATIONS				       *ConflictDetection-limitations*
+
+KNOWN PROBLEMS				    *ConflictDetection-known-problems*
+
+TODO						      *ConflictDetection-todo*
+
+IDEAS						     *ConflictDetection-ideas*
+
+==============================================================================
+HISTORY						   *ConflictDetection-history*
+
+1.00	13-Jul-2012
+First published version.
+
+0.01	14-Mar-2012
+Started development.
+
+==============================================================================
+Copyright: (C) 2012 Ingo Karkat
+The VIM LICENSE applies to this script; see |copyright|.
+
+Maintainer:	Ingo Karkat <ingo@karkat.de>
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:

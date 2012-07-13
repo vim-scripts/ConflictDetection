@@ -1,0 +1,30 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=4129
+
+DESCRIPTION
+This plugin detects and highlights conflict markers such as <<<<<<<, =======,
+and >>>>>>>, which are inserted by source code management systems on merges to
+indicate that the automatic resolution failed; this plugin helps you with
+becoming aware of and finding them.
+
+RELATED WORKS
+To quickly locate and resolve the conflicts, you can use the motions and text
+objects provided by the companion ConflictMotions.vim plugin (vimscript
+#3991).
+
+
+USAGE
+The plugin automatically adds syntax definitions for the conflict markers and
+the conflicted lines which are enclosed in the markers. Lines originating from
+"our" version are highlighted in a different way than lines from "their"
+version (1), so it's easier for you to visually differentiate the alternatives
+and make the right editing choices to resolve the conflict. The "base" version
+of the diff3-style syntax is supported, too.
+
+(1) unless the filetype's own syntax somehow interferes with it
+
+The plugin warns you when a buffer that contains conflict markers is edited or
+saved. Cp. g:ConflictDetection_WarnEvents
+
+The detections stores its status in the buffer variable b:conflicted. You can
+evaluate this boolean variable in a custom statusline to indicate whether
+the buffer contains conflicts.
