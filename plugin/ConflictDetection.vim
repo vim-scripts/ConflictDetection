@@ -2,6 +2,7 @@
 "
 " DEPENDENCIES:
 "   - ConflictDetection.vim autoload script
+"   - ingotimelimitedsearch.vim autoload script
 "
 " Copyright: (C) 2012 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
@@ -9,6 +10,9 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.01.002	17-Oct-2012	Delegate search to
+"				ingotimelimitedsearch#IsBufferContains() to
+"				avoid long search delays on very large files.
 "   1.00.001	12-Mar-2012	file creation
 
 " Avoid installing twice or when in unsupported Vim version.
@@ -30,7 +34,7 @@ endif
 "- functions -------------------------------------------------------------------
 
 function! s:ConflictCheck()
-    let b:conflicted = !! search('^\([<=>|]\)\{7}\1\@!', 'cnw')
+    let b:conflicted = !! ingotimelimitedsearch#IsBufferContains('^\([<=>|]\)\{7}\1\@!')
 endfunction
 function! s:ConflictWarn()
     if ! exists('b:conflicted')

@@ -51,10 +51,10 @@ the buffer contains conflicts.
 INSTALLATION				      *ConflictDetection-installation*
 
 This script is packaged as a |vimball|. If you have the "gunzip" decompressor
-in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+in your PATH, simply edit the *.vmb.gz package in Vim; otherwise, decompress
 the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
 vimball or via the |:UseVimball| command. >
-    vim ConflictDetection.vba.gz
+    vim ConflictDetection*.vmb.gz
     :so %
 To uninstall, use the |:RmVimball| command.
 
@@ -108,6 +108,9 @@ IDEAS						     *ConflictDetection-ideas*
 
 ==============================================================================
 HISTORY						   *ConflictDetection-history*
+
+1.01	17-Oct-2012
+Avoid long search delays on very large files.
 
 1.00	13-Jul-2012
 First published version.
