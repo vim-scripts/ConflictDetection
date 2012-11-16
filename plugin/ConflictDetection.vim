@@ -10,6 +10,12 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.02.003	16-Nov-2012	FIX: Avoid E417 / E421 in conflict marker
+"				highlight group definitions when no original
+"				color is defined (i.e. when the colorscheme does
+"				not define a cterm / gui background color for
+"				DiffAdd/Change/Text). Thanks to Dave Goodell for
+"				sending a patch.
 "   1.01.002	17-Oct-2012	Delegate search to
 "				ingotimelimitedsearch#IsBufferContains() to
 "				avoid long search delays on very large files.
@@ -82,10 +88,22 @@ highlight def link conflictTheirs                   DiffText
 highlight def link conflictSeparatorMarkerSymbol    NonText
 
 highlight def conflictSeparatorMarker   ctermfg=Grey guifg=Grey
+function! s:GetColorDefinition( hlName, mode )
+    let l:color = synIDattr(synIDtrans(hlID(a:hlName)), 'bg', a:mode)
+    if empty(l:color) || l:color == -1
+	" Avoid "E417: missing argument: guifg=" or "E421: Color name or number not recognized: ctermbg=-1"
+	return ''
+    endif
+
+    return printf('%sfg=%s', a:mode, l:color)
+endfunction
 function! s:HighlightMarkerDefaultsLikeDiffHighlights()
-    execute 'highlight def conflictOursMarker   ctermfg=' . synIDattr(synIDtrans(hlID('DiffAdd')),    'bg', 'cterm') . ' guifg=' . synIDattr(synIDtrans(hlID('DiffAdd')),    'bg', 'gui')
-    execute 'highlight def conflictBaseMarker   ctermfg=' . synIDattr(synIDtrans(hlID('DiffChange')), 'bg', 'cterm') . ' guifg=' . synIDattr(synIDtrans(hlID('DiffChange')), 'bg', 'gui')
-    execute 'highlight def conflictTheirsMarker ctermfg=' . synIDattr(synIDtrans(hlID('DiffText')),   'bg', 'cterm') . ' guifg=' . synIDattr(synIDtrans(hlID('DiffText')),   'bg', 'gui')
+    for [l:what, l:hlName] in [['Ours', 'DiffAdd'], ['Base', 'DiffChange'], ['Theirs', 'DiffText']]
+	let l:colorDefinition = s:GetColorDefinition(l:hlName, 'cterm') . ' ' . s:GetColorDefinition(l:hlName, 'gui')
+	if l:colorDefinition !=# ' '
+	    execute printf('highlight def conflict%sMarker %s', l:what, l:colorDefinition)
+	endif
+    endfor
 endfunction
 if has('gui_running')
     autocmd GuiEnter * call <SID>HighlightMarkerDefaultsLikeDiffHighlights()

@@ -109,6 +109,12 @@ IDEAS						     *ConflictDetection-ideas*
 ==============================================================================
 HISTORY						   *ConflictDetection-history*
 
+1.02	16-Nov-2012
+FIX: Avoid E417 / E421 in conflict marker highlight group definitions when no
+original color is defined (i.e. when the colorscheme does not define a cterm /
+gui background color for DiffAdd/Change/Text). Thanks to Dave Goodell for
+sending a patch.
+
 1.01	17-Oct-2012
 Avoid long search delays on very large files.
 
