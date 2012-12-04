@@ -10,6 +10,7 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.10.004	04-Dec-2012	ENH: Add :ConflictSyntax command.
 "   1.02.003	16-Nov-2012	FIX: Avoid E417 / E421 in conflict marker
 "				highlight group definitions when no original
 "				color is defined (i.e. when the colorscheme does
@@ -63,6 +64,11 @@ function! s:ConflictHighlight()
 	call ConflictDetection#Highlight()
     endif
 endfunction
+
+
+"- commands --------------------------------------------------------------------
+
+command! -bar -nargs=? -complete=syntax ConflictSyntax setlocal syntax=<args>|call ConflictDetection#Highlight()
 
 
 "- autocmds --------------------------------------------------------------------

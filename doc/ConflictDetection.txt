@@ -32,11 +32,16 @@ USAGE						     *ConflictDetection-usage*
 The plugin automatically adds syntax definitions for the conflict markers and
 the conflicted lines which are enclosed in the markers. Lines originating from
 "our" version are highlighted in a different way than lines from "their"
-version (1), so it's easier for you to visually differentiate the alternatives
-and make the right editing choices to resolve the conflict. The "base" version
-of the diff3-style syntax is supported, too.
-
-(1) unless the filetype's own syntax somehow interferes with it
+version, so it's easier for you to visually differentiate the alternatives and
+make the right editing choices to resolve the conflict. The "base" version of
+the diff3-style syntax is supported, too.
+							     *:ConflictSyntax*
+:ConflictSyntax [{syntax}]
+			Remove / change the syntax (to {syntax}) while keeping
+			the conflict syntax definitions (:setl syntax=...
+			would remove them as well). Useful when the filetype's
+			own syntax interferes with the overlaid conflict
+			syntax definitions.
 
 						  *ConflictDetection-warnings*
 The plugin warns you when a buffer that contains conflict markers is edited or
@@ -108,6 +113,10 @@ IDEAS						     *ConflictDetection-ideas*
 
 ==============================================================================
 HISTORY						   *ConflictDetection-history*
+
+1.10	04-Dec-2012
+ENH: Add :ConflictSyntax command to work around interference of the conflict
+highlightings with the original filetype's syntax.
 
 1.02	16-Nov-2012
 FIX: Avoid E417 / E421 in conflict marker highlight group definitions when no
