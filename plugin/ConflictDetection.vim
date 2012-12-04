@@ -10,6 +10,7 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.11.005	04-Dec-2012	FIX: Prevent error on Vim 7.0 - 7.2.
 "   1.10.004	04-Dec-2012	ENH: Add :ConflictSyntax command.
 "   1.02.003	16-Nov-2012	FIX: Avoid E417 / E421 in conflict marker
 "				highlight group definitions when no original
@@ -68,7 +69,11 @@ endfunction
 
 "- commands --------------------------------------------------------------------
 
+if v:version < 703
+command! -bar -nargs=?                  ConflictSyntax setlocal syntax=<args>|call ConflictDetection#Highlight()
+else
 command! -bar -nargs=? -complete=syntax ConflictSyntax setlocal syntax=<args>|call ConflictDetection#Highlight()
+endif
 
 
 "- autocmds --------------------------------------------------------------------

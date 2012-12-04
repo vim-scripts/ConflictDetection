@@ -114,6 +114,9 @@ IDEAS						     *ConflictDetection-ideas*
 ==============================================================================
 HISTORY						   *ConflictDetection-history*
 
+1.11	04-Dec-2012
+FIX: Prevent error on Vim 7.0 - 7.2.
+
 1.10	04-Dec-2012
 ENH: Add :ConflictSyntax command to work around interference of the conflict
 highlightings with the original filetype's syntax.
