@@ -2,14 +2,19 @@
 "
 " DEPENDENCIES:
 "   - ConflictDetection.vim autoload script
-"   - ingotimelimitedsearch.vim autoload script
+"   - ingo/msg.vim autoload script
+"   - ingo/search/timelimited.vim autoload script
 "
-" Copyright: (C) 2012 Ingo Karkat
+" Copyright: (C) 2012-2013 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.12.006	26-Mar-2013	To avoid false positives (e.g. in nested email
+"				replies), ensure that both "our" and "theirs"
+"				markers do exist.
+"				Use functions from ingo-library.
 "   1.11.005	04-Dec-2012	FIX: Prevent error on Vim 7.0 - 7.2.
 "   1.10.004	04-Dec-2012	ENH: Add :ConflictSyntax command.
 "   1.02.003	16-Nov-2012	FIX: Avoid E417 / E421 in conflict marker
@@ -28,6 +33,8 @@ if exists('g:loaded_ConflictDetection') || (v:version < 700)
     finish
 endif
 let g:loaded_ConflictDetection = 1
+let s:save_cpo = &cpo
+set cpo&vim
 
 "- configuration ---------------------------------------------------------------
 
@@ -42,7 +49,25 @@ endif
 "- functions -------------------------------------------------------------------
 
 function! s:ConflictCheck()
-    let b:conflicted = !! ingotimelimitedsearch#IsBufferContains('^\([<=>|]\)\{7}\1\@!')
+    let l:conflictLnum = ingo#search#timelimited#IsBufferContains('^\([<=>|]\)\{7}\1\@!')
+    if l:conflictLnum == 0
+	let b:conflicted = 0
+	return
+    endif
+
+    " To avoid false positives (e.g. in nested email replies), ensure that both
+    " "our" and "theirs" markers do exist.
+    let l:conflictType = strpart(getline(l:conflictLnum), 0, 1) " Dealing with pure ASCII characters.
+    if l:conflictType ==# '<'
+	let b:conflicted = !! ingo#search#timelimited#IsBufferContains('^\(>\)\{7}\1\@!', 0)
+    elseif l:conflictType ==# '>'
+	let b:conflicted = !! ingo#search#timelimited#IsBufferContains('^\(<\)\{7}\1\@!', 0)
+    else
+	let b:conflicted = (
+	\   ingo#search#timelimited#IsBufferContains('^\(<\)\{7}\1\@!', 0) &&
+	\   ingo#search#timelimited#IsBufferContains('^\(>\)\{7}\1\@!', 0)
+	\)
+    endif
 endfunction
 function! s:ConflictWarn()
     if ! exists('b:conflicted')
@@ -50,10 +75,7 @@ function! s:ConflictWarn()
     endif
 
     if b:conflicted
-	let v:warningmsg = 'Conflict markers found'
-	echohl WarningMsg
-	echomsg v:warningmsg
-	echohl None
+	call ingo#msg#WarningMsg('Conflict markers found')
     endif
 endfunction
 function! s:ConflictHighlight()
@@ -122,4 +144,6 @@ else
     call s:HighlightMarkerDefaultsLikeDiffHighlights()
 endif
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
 " vim: set ts=8 sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
